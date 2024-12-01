@@ -31,11 +31,12 @@
     <!-- NAVIGATION BAR END -->
     
     <!-- KALKULATOR FUNGSI EKSPONENSIAL -->
+    <div class="content-container">
     <div class="container mt-5">
         <h1 class="text-center">Kalkulator Fungsi Eksponensial</h1>
         <div class="text-center mt-4">
             <label for="functionInput">Masukkan Fungsi Eksponensial (misalnya: e^x, -e^x):</label>
-            <input type="text" id="functionInput" class="form-control" placeholder="Contoh: -2^x, e^x" /><br><br>
+            <input type="text" id="functionInput" class="form-control" placeholder="Contoh: 2^x, e^x" /><br><br>
 
             <label for="xRange">Pilih Rentang x (misalnya: -10 sampai 10):</label>
             <input type="number" id="xStart" class="form-control" placeholder="Mulai x (misalnya: -10)" />
@@ -47,7 +48,8 @@
         <div class="mt-4">
             <canvas id="graph" width="600" height="400"></canvas>
         </div>
-    </div>
+      </div>
+      </div>
 
     <script>
         // Fungsi untuk menggambar grafik fungsi eksponensial
@@ -93,7 +95,7 @@
                             data: yValues,
                             borderColor: 'rgba(75, 192, 192, 1)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderWidth: 2,
+                            borderWidth: 3,
                             fill: true,
                         }]
                     },
@@ -142,6 +144,7 @@
                 console.error(error);
             }
         }
+    
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
