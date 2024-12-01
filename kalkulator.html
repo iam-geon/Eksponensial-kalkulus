@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kalkulator Limit Eksponensial</title>
+  <title>Kalkulator Fungsi Eksponensial</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- NAVIGATION BAR -->
@@ -28,43 +28,121 @@
             </li>
         </ul>
     </div>
-   <!-- NAVIGATION BAR SELESAI -->
+    <!-- NAVIGATION BAR END -->
+    
+    <!-- KALKULATOR FUNGSI EKSPONENSIAL -->
+    <div class="container mt-5">
+        <h1 class="text-center">Kalkulator Fungsi Eksponensial</h1>
+        <div class="text-center mt-4">
+            <label for="functionInput">Masukkan Fungsi Eksponensial (misalnya: e^x, -e^x):</label>
+            <input type="text" id="functionInput" class="form-control" placeholder="Contoh: -2^x, e^x" /><br><br>
 
-   <!--KALKULATOR-->
-   <div class="content-container", class="centered-content">
-    <h1>Kalkulator Eksponensial</h1>
-    <label for="base">Masukkan Basis:</label>
-    <input type="number" id="base" placeholder="Contoh: 2"><br><br>
+            <label for="xRange">Pilih Rentang x (misalnya: -10 sampai 10):</label>
+            <input type="number" id="xStart" class="form-control" placeholder="Mulai x (misalnya: -10)" />
+            <input type="number" id="xEnd" class="form-control" placeholder="Akhir x (misalnya: 10)" /><br><br>
 
-    <label for="exponent">Masukkan Eksponen:</label>
-    <input type="number" id="exponent" placeholder="Contoh: 3"><br><br>
+            <button onclick="plotGraph()" class="btn btn-primary">Tampilkan Grafik</button>
+        </div>
 
-    <button onclick="calculateExponential()">Hitung</button>
-    <p id="result"></p>
-   </div>
+        <div class="mt-4">
+            <canvas id="graph" width="600" height="400"></canvas>
+        </div>
+    </div>
 
     <script>
-        function calculateExponential() {
-            // Ambil nilai basis dan eksponen
-            let base = document.getElementById("base").value;
-            let exponent = document.getElementById("exponent").value;
+        // Fungsi untuk menggambar grafik fungsi eksponensial
+        function plotGraph() {
+            const funcInput = document.getElementById("functionInput").value;
+            const xStart = parseInt(document.getElementById("xStart").value);
+            const xEnd = parseInt(document.getElementById("xEnd").value);
 
-            // Pastikan nilai basis dan eksponen diisi
-            if (base === "" || exponent === "") {
-                document.getElementById("result").innerText = "Masukkan basis dan eksponen!";
+            if (!funcInput || isNaN(xStart) || isNaN(xEnd)) {
+                alert("Mohon masukkan fungsi dan rentang x yang valid.");
                 return;
             }
 
-            // Hitung eksponensial
-            let result = Math.pow(base, exponent);
+            try {
+                // Membuat fungsi dari input
+                const func = new Function("x", `return ${funcInput.replace(/^e\^/, "Math.exp").replace(/\^/g, "**")};`);
 
-            // Tampilkan hasil
-            document.getElementById("result").innerText = `Hasil: ${result}`;
+                // Membuat array x dan y
+                const xValues = [];
+                const yValues = [];
+
+                // Menentukan nilai x dari rentang yang diberikan
+                for (let x = xStart; x <= xEnd; x++) {
+                    xValues.push(x);
+                    yValues.push(func(x));
+                }
+
+                // Mendapatkan konteks canvas
+                const ctx = document.getElementById('graph').getContext('2d');
+
+                // Menghancurkan grafik sebelumnya jika ada
+                if (window.graphInstance) {
+                    window.graphInstance.destroy();
+                }
+
+                // Membuat grafik baru
+                window.graphInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            label: `f(x) = ${funcInput}`,
+                            data: yValues,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 2,
+                            fill: true,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'x'
+                                },
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'f(x)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toFixed(0); // Menampilkan angka bulat di sumbu y
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                enabled: true
+                            }
+                        },
+                        elements: {
+                            line: {
+                                tension: 0.1 // Memperhalus grafik
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                alert("Terjadi kesalahan dalam memasukkan fungsi. Pastikan formatnya benar.");
+                console.error(error);
+            }
         }
     </script>
-
-
-
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
